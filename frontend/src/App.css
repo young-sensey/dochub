@@ -1,0 +1,17 @@
+.App {
+  min-height: 100vh;
+}
+
+.App h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.App button:hover {
+  opacity: 0.8;
+}
+
+.App button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
