@@ -68,6 +68,20 @@ func CreateTables(db *sql.DB) error {
 		return err
 	}
 
+	// Создаем таблицу users
+	usersQuery := `
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		login VARCHAR(255) NOT NULL UNIQUE,
+		password_hash VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	)`
+
+	_, err = db.Exec(usersQuery)
+	if err != nil {
+		return err
+	}
+
 	log.Println("Tables created successfully")
 	return nil
 }
