@@ -33,17 +33,12 @@ function HeaderAuth() {
   };
   return (
     <nav>
-      {!token ? (
+      {token ? (
         <>
-          <Link to="/login" className="btn">Войти</Link>
-          <Link to="/register" className="btn" style={{ marginLeft: 8 }}>Регистрация</Link>
+          <span style={{ marginRight: 12 }}>{JSON.parse(user).login}</span>
+          <span className="btn" onClick={onLogout}>Выйти</span>
         </>
-      ) : (
-        <>
-          <span style={{ marginRight: 12 }}>{user ? JSON.parse(user).login : ''}</span>
-          <button onClick={onLogout} className="btn">Выйти</button>
-        </>
-      )}
+      ) : ''}
     </nav>
   );
 }
@@ -53,7 +48,7 @@ function App() {
     <div className="App">
       <div className="header">
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h1 style={{ margin: 0 }}>Система управления документами</h1>
+          <p className="header-title" style={{ margin: 0 }}>Система управления документами</p>
           <HeaderAuth />
         </div>
       </div>

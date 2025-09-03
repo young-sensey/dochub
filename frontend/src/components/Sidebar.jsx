@@ -71,6 +71,12 @@ export default function Sidebar() {
             {category.name}
           </Link>
         ))}
+        <Link
+          to="/categories" 
+          className={`sidebar-item categories ${isActive('/categories') ? 'active' : ''}`}
+        >
+          Категории
+        </Link>
       </div>
     </div>
   );
