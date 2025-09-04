@@ -7,8 +7,14 @@ export default function Sidebar() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
   useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      setCategories([]);
+      return;
+    }
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/categories`);
@@ -20,7 +26,7 @@ export default function Sidebar() {
       }
     };
     fetchCategories();
-  }, []);
+  }, [token]);
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -33,6 +39,10 @@ export default function Sidebar() {
   const isNoCategoryActive = () => {
     return location.pathname === `/category/null`;
   };
+
+  if (!token) {
+    return null;
+  }
 
   if (loading) {
     return (
