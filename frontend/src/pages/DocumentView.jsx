@@ -53,7 +53,7 @@ export default function DocumentView() {
   return (
     <div>
       <h2>{documentData.title}</h2>
-      <div style={{ marginBottom: 8 }}>Автор: {documentData.author}</div>
+      {/* Автор скрыт */}
       <div style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}>{documentData.content}</div>
       <div style={{ color: '#666', fontSize: 14, marginBottom: 16 }}>
         Создан: {new Date(documentData.created_at).toLocaleString('ru-RU')} | Обновлен: {new Date(documentData.updated_at).toLocaleString('ru-RU')}

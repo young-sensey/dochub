@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"backend/entities"
+	"backend/middleware"
 
 	"github.com/gorilla/mux"
 )
@@ -35,14 +36,14 @@ func (h *DocumentHandler) GetDocuments(w http.ResponseWriter, r *http.Request) {
 	if categoryID != "" {
 		if categoryID == "null" {
 			// Если category_id=null, возвращаем документы без категории
-			rows, err = h.db.Query("SELECT id, title, content, author, file_path, category_id, created_at, updated_at FROM documents WHERE category_id IS NULL ORDER BY created_at DESC")
+			rows, err = h.db.Query("SELECT id, title, content, file_path, category_id, user_id, created_at, updated_at FROM documents WHERE category_id IS NULL ORDER BY created_at DESC")
 		} else {
 			// Если указан category_id, фильтруем по категории
-			rows, err = h.db.Query("SELECT id, title, content, author, file_path, category_id, created_at, updated_at FROM documents WHERE category_id = $1 ORDER BY created_at DESC", categoryID)
+			rows, err = h.db.Query("SELECT id, title, content, file_path, category_id, user_id, created_at, updated_at FROM documents WHERE category_id = $1 ORDER BY created_at DESC", categoryID)
 		}
 	} else {
 		// Иначе возвращаем все документы
-		rows, err = h.db.Query("SELECT id, title, content, author, file_path, category_id, created_at, updated_at FROM documents ORDER BY created_at DESC")
+		rows, err = h.db.Query("SELECT id, title, content, file_path, category_id, user_id, created_at, updated_at FROM documents ORDER BY created_at DESC")
 	}
 
 	if err != nil {
@@ -54,7 +55,7 @@ func (h *DocumentHandler) GetDocuments(w http.ResponseWriter, r *http.Request) {
 	var documents []entities.Document
 	for rows.Next() {
 		var doc entities.Document
-		err := rows.Scan(&doc.ID, &doc.Title, &doc.Content, &doc.Author, &doc.FilePath, &doc.CategoryID, &doc.CreatedAt, &doc.UpdatedAt)
+		err := rows.Scan(&doc.ID, &doc.Title, &doc.Content, &doc.FilePath, &doc.CategoryID, &doc.UserID, &doc.CreatedAt, &doc.UpdatedAt)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -82,14 +83,16 @@ func (h *DocumentHandler) CreateDocument(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	userID := r.Context().Value(middleware.UserIDContextKey).(int)
+
 	query := `
-	INSERT INTO documents (title, content, author, category_id) 
+	INSERT INTO documents (title, content, category_id, user_id) 
 	VALUES ($1, $2, $3, $4) 
-	RETURNING id, title, content, author, file_path, category_id, created_at, updated_at`
+	RETURNING id, title, content, file_path, category_id, user_id, created_at, updated_at`
 
 	var doc entities.Document
-	err := h.db.QueryRow(query, req.Title, req.Content, req.Author, req.CategoryID).
-		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.Author, &doc.FilePath, &doc.CategoryID, &doc.CreatedAt, &doc.UpdatedAt)
+	err := h.db.QueryRow(query, req.Title, req.Content, req.CategoryID, userID).
+		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.FilePath, &doc.CategoryID, &doc.UserID, &doc.CreatedAt, &doc.UpdatedAt)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -111,7 +114,7 @@ func (h *DocumentHandler) createDocumentWithFile(w http.ResponseWriter, r *http.
 
 	title := r.FormValue("title")
 	content := r.FormValue("content")
-	author := r.FormValue("author")
+	// author удален
 	categoryIDStr := r.FormValue("category_id")
 
 	var categoryID *int
@@ -140,14 +143,15 @@ func (h *DocumentHandler) createDocumentWithFile(w http.ResponseWriter, r *http.
 		filePath = fullPath
 	}
 
+	userID := r.Context().Value(middleware.UserIDContextKey).(int)
 	query := `
-	INSERT INTO documents (title, content, author, file_path, category_id) 
+	INSERT INTO documents (title, content, file_path, category_id, user_id) 
 	VALUES ($1, $2, $3, $4, $5) 
-	RETURNING id, title, content, author, file_path, category_id, created_at, updated_at`
+	RETURNING id, title, content, file_path, category_id, user_id, created_at, updated_at`
 
 	var doc entities.Document
-	err = h.db.QueryRow(query, title, content, author, filePath, categoryID).
-		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.Author, &doc.FilePath, &doc.CategoryID, &doc.CreatedAt, &doc.UpdatedAt)
+	err = h.db.QueryRow(query, title, content, filePath, categoryID, userID).
+		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.FilePath, &doc.CategoryID, &doc.UserID, &doc.CreatedAt, &doc.UpdatedAt)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -169,9 +173,9 @@ func (h *DocumentHandler) GetDocument(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var doc entities.Document
-	query := "SELECT id, title, content, author, file_path, category_id, created_at, updated_at FROM documents WHERE id = $1"
+	query := "SELECT id, title, content, file_path, category_id, user_id, created_at, updated_at FROM documents WHERE id = $1"
 	err = h.db.QueryRow(query, id).
-		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.Author, &doc.FilePath, &doc.CategoryID, &doc.CreatedAt, &doc.UpdatedAt)
+		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.FilePath, &doc.CategoryID, &doc.UserID, &doc.CreatedAt, &doc.UpdatedAt)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -203,13 +207,13 @@ func (h *DocumentHandler) UpdateDocument(w http.ResponseWriter, r *http.Request)
 
 	query := `
 	UPDATE documents 
-	SET title = $1, content = $2, author = $3, category_id = $4, updated_at = CURRENT_TIMESTAMP 
-	WHERE id = $5 
-	RETURNING id, title, content, author, file_path, category_id, created_at, updated_at`
+	SET title = $1, content = $2, category_id = $3, updated_at = CURRENT_TIMESTAMP 
+	WHERE id = $4 
+	RETURNING id, title, content, file_path, category_id, user_id, created_at, updated_at`
 
 	var doc entities.Document
-	err = h.db.QueryRow(query, req.Title, req.Content, req.Author, req.CategoryID, id).
-		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.Author, &doc.FilePath, &doc.CategoryID, &doc.CreatedAt, &doc.UpdatedAt)
+	err = h.db.QueryRow(query, req.Title, req.Content, req.CategoryID, id).
+		Scan(&doc.ID, &doc.Title, &doc.Content, &doc.FilePath, &doc.CategoryID, &doc.UserID, &doc.CreatedAt, &doc.UpdatedAt)
 
 	if err != nil {
 		if err == sql.ErrNoRows {

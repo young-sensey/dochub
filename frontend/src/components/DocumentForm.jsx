@@ -3,7 +3,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../config';
 
 export default function DocumentForm({
-  initialValues = { title: '', content: '', author: '', category_id: null },
+  initialValues = { title: '', content: '', category_id: null },
   allowFileUpload = false,
   submitButtonLabel = 'Сохранить',
   onSubmit,
@@ -73,17 +73,7 @@ export default function DocumentForm({
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="author">Автор:</label>
-        <input
-          type="text"
-          id="author"
-          name="author"
-          value={values.author}
-          onChange={handleChange}
-          required
-        />
-      </div>
+      {/* поле автора удалено */}
 
       <div className="form-group">
         <label htmlFor="category_id">Категория:</label>

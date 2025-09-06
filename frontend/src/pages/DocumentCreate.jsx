@@ -13,7 +13,6 @@ export default function DocumentCreate() {
       const formData = new FormData();
       formData.append('title', values.title);
       formData.append('content', values.content);
-      formData.append('author', values.author);
       if (file) formData.append('file', file);
 
       await axios.post(`${API_BASE_URL}/dock`, formData, {
@@ -32,7 +31,7 @@ export default function DocumentCreate() {
       {error && <div className="error">{error}</div>}
 
       <DocumentForm
-        initialValues={{ title: '', content: '', author: '', category_id: null }}
+        initialValues={{ title: '', content: '', category_id: null }}
         allowFileUpload={true}
         submitButtonLabel="Создать"
         onSubmit={handleCreate}

@@ -99,7 +99,6 @@ export default function DocumentsList() {
                 <div className="document-title">{doc.title}</div>
                 <div className="document-content">{doc.content}</div>
                 <div className="document-meta">
-                  Автор: {doc.author} | 
                   {doc.category_id && <span>Категория: {doc.category_id} | </span>}
                   Создан: {new Date(doc.created_at).toLocaleString('ru-RU')} | 
                   Обновлен: {new Date(doc.updated_at).toLocaleString('ru-RU')}

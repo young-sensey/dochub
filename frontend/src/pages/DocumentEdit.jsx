@@ -9,7 +9,7 @@ export default function DocumentEdit() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [documentValues, setDocumentValues] = useState({ title: '', content: '', author: '' });
+  const [documentValues, setDocumentValues] = useState({ title: '', content: '', category_id: null });
 
   useEffect(() => {
     const loadDocument = async () => {
@@ -19,7 +19,6 @@ export default function DocumentEdit() {
         setDocumentValues({ 
           title: data.title, 
           content: data.content, 
-          author: data.author, 
           category_id: data.category_id 
         });
       } catch (err) {
