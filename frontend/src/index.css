@@ -165,6 +165,13 @@ code {
 
 .documents-list {
   overflow: hidden;
+  margin-top: 16px;
+}
+
+.documents-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .documents-list h2 {
@@ -211,6 +218,13 @@ code {
   gap: 10px;
 }
 
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+}
+
 .loading {
   text-align: center;
   padding: 20px;
@@ -231,4 +245,20 @@ code {
   padding: 10px;
   border-radius: 4px;
   margin-bottom: 20px;
-} 
+}
+
+.view .content {
+  white-space: pre-wrap;
+  margin-bottom: 16px;
+}
+
+.view .meta {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.view .buttons {
+  display: flex;
+  gap: 8px;
+}

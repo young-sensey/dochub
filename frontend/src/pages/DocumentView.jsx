@@ -51,15 +51,14 @@ export default function DocumentView() {
   if (!documentData) return <div><div className="error">Документ не найден</div></div>;
 
   return (
-    <div>
+    <div className="view">
       <h2>{documentData.title}</h2>
-      {/* Автор скрыт */}
-      <div style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}>{documentData.content}</div>
-      <div style={{ color: '#666', fontSize: 14, marginBottom: 16 }}>
+      <div className="content">{documentData.content}</div>
+      <div className="meta">
         Создан: {new Date(documentData.created_at).toLocaleString('ru-RU')} | Обновлен: {new Date(documentData.updated_at).toLocaleString('ru-RU')}
       </div>
 
-      <div style={{ display: 'flex', gap: 8 }}>
+      <div className="buttons">
         <Link to={`/documents/${id}/edit`} className="btn btn-warning">Редактировать</Link>
         {documentData.file_path && (
           <button className="btn btn-success" onClick={handleDownload}>

@@ -28,15 +28,15 @@ export default function CategoryView() {
   if (!categoryData) return <div><div className="error">Категория не найдена</div></div>;
 
   return (
-    <div>
+    <div className="view">
       <h2>{categoryData.name}</h2>
-      <div style={{ whiteSpace: 'pre-wrap', marginBottom: 16 }}>{categoryData.description}</div>
-      <div style={{ color: '#666', fontSize: 14, marginBottom: 16 }}>
+      <div className="content">{categoryData.description}</div>
+      <div className="meta">
         Создана: {new Date(categoryData.created_at).toLocaleString('ru-RU')} | 
         Обновлена: {new Date(categoryData.updated_at).toLocaleString('ru-RU')}
       </div>
 
-      <div style={{ display: 'flex', gap: 8 }}>
+      <div className="buttons">
         <Link to={`/categories/${id}/edit`} className="btn btn-warning">Редактировать</Link>
         <Link to="/categories" className="btn">Назад к списку</Link>
       </div>

@@ -19,6 +19,7 @@
 .App .header-title {
   font-size: 23px;
   font-weight: bold;
+  margin: 0px;
 }
 
 .header {
@@ -42,4 +43,14 @@
 .header nav .btn:hover {
   text-decoration: none;
   opacity: 0.8;
+}
+
+.App .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+}
+
+.user-login {
+  margin-right: 12px; 
 }

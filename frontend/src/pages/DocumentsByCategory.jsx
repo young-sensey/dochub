@@ -103,8 +103,8 @@ export default function DocumentsByCategory() {
       {error && <div className="error">{error}</div>}
       {success && <div className="success">{success}</div>}
 
-      <div className="documents-list" style={{ marginTop: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="documents-list">
+        <div className="documents-list-header">
           <h2>Документы категории: {category.name}</h2>
           <Link to="/documents/new" className="btn btn-primary">Добавить документ</Link>
         </div>
@@ -125,10 +125,9 @@ export default function DocumentsByCategory() {
               <div className="document-actions">
                 {doc.file_path && (
                   <button
-                    className="btn btn-success"
+                    className="btn btn-success btn-download"
                     onClick={() => handleDownload(doc.id, doc.file_path)}
                     title="Скачать файл"
-                    style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '10px 16px' }}
                   >
                     <DownloadIcon />
                   </button>

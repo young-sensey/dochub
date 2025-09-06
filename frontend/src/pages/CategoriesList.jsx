@@ -53,8 +53,8 @@ export default function CategoriesList() {
       {error && <div className="error">{error}</div>}
       {success && <div className="success">{success}</div>}
 
-      <div className="documents-list" style={{ marginTop: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="documents-list">
+        <div className="documents-list-header">
           <h2>Список категорий</h2>
           <Link to="/categories/new" className="btn btn-primary">Добавить категорию</Link>
         </div>
